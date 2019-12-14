@@ -5,8 +5,13 @@ var todaysDate = moment().format("DD/MM/YY")
 
 function getWeatherForecast(cityName) {
   var APIKey = "e3a1df6247837808a7b143e583dff1c3";
-  var queryURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&units=metric&appid=" + APIKey;
-  
+  if (location.protocol === 'http:') {
+    var queryURL = "http://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&units=metric&appid=" + APIKey;
+  }
+  else {
+    var queryURL = "https://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&units=metric&appid=" + APIKey;
+  }
+
         $.ajax({
           url: queryURL,
           method: "GET"
@@ -14,25 +19,36 @@ function getWeatherForecast(cityName) {
           .then(function(response) {
             // getting weather for current day
             console.log(response);
+            
             // Current Day Temp
             var tempC = Math.round((response.list[0].main.temp) * 10) / 10;
             $("#cityTemp").text("Temperature: " + tempC + "°C");
+            
             // Current Day Weather Icon
             weatherIcon = response.list[0].weather[0].icon
             var weatherConditions = "http://openweathermap.org/img/wn/" + weatherIcon +"@2x.png"
             console.log(weatherConditions)
             $("#cityWeatherIcon").attr("src", weatherConditions);
             console.log(response.list[0].weather[0].description);
+            
             // Current Day Wind Speed
             var cityWindSpeed = response.list[0].wind.speed;
             $("#cityWindSpeed").text("Wind Speed: " + cityWindSpeed +" MPH");
+            
             // Current Day Humidity
             var cityHumidity = response.list[0].main.humidity;
             $("#cityHumidity").text("Humidity: " + cityHumidity + "%");
             var cityLatitude = response.city.coord.lat;
             var cityLongitudes = response.city.coord.lon;
+            
             // Getting UV Index for current day
-            var queryUVIURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" + APIKey + "&lat=" + cityLatitude + "&lon=" + cityLongitudes
+            if (location.protocol === 'http:') {
+              var queryUVIURL = "http://api.openweathermap.org/data/2.5/uvi?appid=" + APIKey + "&lat=" + cityLatitude + "&lon=" + cityLongitudes
+            }
+            else {
+              var queryUVIURL = "https://api.openweathermap.org/data/2.5/uvi?appid=" + APIKey + "&lat=" + cityLatitude + "&lon=" + cityLongitudes
+            }
+
               $.ajax({
                 url: queryUVIURL,
                 method: "GET"
@@ -42,7 +58,8 @@ function getWeatherForecast(cityName) {
                   $("#cityUVI").text("UV Index: " + cityUVI)
 
                 });
-            // Geeting weather forecast for next 5 days
+            
+                // Geeting weather forecast for next 5 days
             
             for (var i = 1; i < 6; i++) {
               var fiveDayForecast = $("<div>");
@@ -77,22 +94,10 @@ function getWeatherForecast(cityName) {
 // On Click
 $("#searchBtn").on("click", function() {
   event.preventDefault();
-  $("#cityNameInput").val("");
   hideWelcomePage();
   displayCityForecast();
+  $("#cityNameInput").val("");
 });
-
-// Capitialise each word
-function capital_letter(str) 
-{
-    str = str.split(" ");
-
-    for (var i = 0, x = str.length; i < x; i++) {
-        str[i] = str[i][0].toUpperCase() + str[i].substr(1);
-    }
-
-    return str.join(" ");
-}
 
 function hideWelcomePage() {
   $(".welcomePage").hide()
@@ -101,11 +106,12 @@ function hideWelcomePage() {
 
 function displayCityForecast() {
   $('#forecastContainer').empty();
-  var userCityName = $("#cityNameInput").val();
-  var cityName = capital_letter(userCityName)
+  var cityName = $("#cityNameInput").val();
+  console.log(cityName)
   $(".cityNameDisplay").text(cityName);
   $(".cityDateDisplay").text(todaysDate);
   $("#forecastHeader").text("5 Day Forecast");
   getWeatherForecast(cityName);
 }
+
 

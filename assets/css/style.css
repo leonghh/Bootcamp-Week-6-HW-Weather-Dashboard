@@ -52,6 +52,10 @@ html, body {
     font-size: 30px;
 }
 
+.cityNameDisplay {
+    text-transform: capitalize;
+}
+
 #cityWeatherIcon {
     height: 60px;
 }
