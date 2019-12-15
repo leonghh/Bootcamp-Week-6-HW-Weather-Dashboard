@@ -41,9 +41,18 @@ html, body {
     background-color: rgb(248, 248, 248);
 }
 
-.forecastPage {
-    display: none;
+a {
+    color: black;
 }
+
+a:active,
+a:focus { 
+    outline: none; 
+}
+
+/* .forecastPage {
+    display: none;
+} */
 
 #mainHeader {
     padding-bottom: 0;
