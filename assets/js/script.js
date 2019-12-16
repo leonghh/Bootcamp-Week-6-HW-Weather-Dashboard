@@ -22,7 +22,7 @@ function getWeatherForecast(cityName) {
         })
           .then(function(response) {
             // getting weather for current day
-            
+            console.log('here')
             // Current Day Temp
             var tempC = Math.round((response.list[0].main.temp) * 10) / 10;
             $("#cityTemp").text("Temperature: " + tempC + "°C");
@@ -87,6 +87,9 @@ function getWeatherForecast(cityName) {
               fiveDayForecast.append(fiveDayTemp);
               fiveDayForecast.append(fiveDayHumidity);
             }
+          })
+          .catch(function (res) {
+            console.log('there was an error');
           });
 }  
 
@@ -152,10 +155,13 @@ function init() {
 }
 
 function loadLastCity() {
-  var cityName = cities[cities.length - 1]
-  $('#forecastContainer').empty();
-  $(".cityNameDisplay").text(cityName);
-  getWeatherForecast(cityName);
+  var cityName = cities[cities.length - 1];
+  console.log(cityName);
+  if (cityName) {
+    $('#forecastContainer').empty();
+    $(".cityNameDisplay").text(cityName);
+    getWeatherForecast(cityName);
+  }
 
 }
 
